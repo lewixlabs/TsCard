@@ -48,6 +48,3 @@ export class Sle extends MemoryCard {
         return true;
     }
 }
-
-let mySle = new Sle([1,2,3,4]);
-console.log(this.cardtype);
