@@ -1,4 +1,5 @@
 // For Node/CommonJS
+// https://www.typescriptlang.org/docs/handbook/migrating-from-javascript.html
 declare function require(path: string): any;
 
 import pcsc1 = require('pcsclite');
