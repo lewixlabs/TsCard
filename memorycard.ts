@@ -1,6 +1,6 @@
 enum CardTypes {
-    SLE5528 = 0,
-    SLE5542 = 1
+    SLE5528,
+    SLE5542
 }
 
 interface IMemoryCard {
@@ -20,7 +20,7 @@ abstract class MemoryCard implements IMemoryCard {
 
 export class Sle extends MemoryCard {
     
-    cardtype : CardTypes;
+    private _cardType : CardTypes;
 
     constructor(prmAtr : Array<number>){
         super();
@@ -31,10 +31,15 @@ export class Sle extends MemoryCard {
 
             case "1,2,3,4":
                 this.size = 256;
-                this.cardtype = CardTypes.SLE5542;
+                this._cardType = CardTypes.SLE5542;
                 break;
         }
     }
+
+     get cardType() {
+         return this._cardType;
+     }
+     
 
     readBytes(offset: number, length: number) : Array<number> {
         return null;

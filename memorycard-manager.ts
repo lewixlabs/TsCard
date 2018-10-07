@@ -3,6 +3,7 @@
 declare function require(path: string): any;
 
 import pcsc1 = require('pcsclite');
+ import Buffer = require('buffer');
 
 export class MemoryCardManager {
     static WaitForSle() : void{
@@ -42,15 +43,15 @@ export class MemoryCardManager {
                                 
                                 
                                 
-                                // reader.transmit(new Buffer([0xFF, 0xA4, 0x00, 0x00, 0x01, 0x06]), 40, protocol, function(err, data) {
-                                //     if (err) {
-                                //         console.log(err);
-                                //     } else {
-                                //         console.log('Data received', data);
-                                //         reader.close();
-                                //         pcsc.close();
-                                //     }
-                                // });
+                                reader.transmit(new Buffer([0xFF, 0xA4, 0x00, 0x00, 0x01, 0x06]), 40, protocol, function(err, data) {
+                                    if (err) {
+                                        console.log(err);
+                                    } else {
+                                        console.log('Data received', data);
+                                        reader.close();
+                                        pcsc.close();
+                                    }
+                                });
                             }
                         });
                     }
