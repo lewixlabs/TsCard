@@ -23,9 +23,17 @@ export class SmartCard {
     }
 }
 
+export class Reader {
+
+    constructor(private _pcscReader : any) {
+
+    }
+}
+
 export class TsCard {
     private static _instance : TsCard;
     private _pcsc : Pcsc;
+    private _reader : any;
 
     private readonly _defaultTimeout;
 
@@ -33,6 +41,7 @@ export class TsCard {
 
         this._pcsc = new Pcsc();
         this._defaultTimeout = 15000;
+        this._reader = null;
     }
 
     static get instance () : TsCard {
@@ -56,8 +65,9 @@ export class TsCard {
                 reject(`Timeout: no card reader detected after ${timeout}ms`);
             }, timeout);
 
-            this._pcsc.on('reader', function(reader) {
+            this._pcsc.on('reader', reader => {
                
+                this._reader = reader;
                 clearTimeout(cmdTimeout);
                 return resolve(reader.name);
             });
@@ -70,32 +80,34 @@ export class TsCard {
         });
     }
 
-    async insertCard(timeout? : number) : Promise<[boolean,SmartCard]> {
+    async insertCard(timeout? : number) : Promise<[boolean,SmartCard?]> {
 
         if (timeout == null)
             timeout = this._defaultTimeout;
 
-        return new Promise<[boolean,SmartCard]>((resolve,reject) => {
+        return new Promise<[boolean,SmartCard?]>((resolve,reject) => {
 
             let cmdTimeout = setTimeout(() => {
 
-                reject(`Timeout: no card inserted after ${timeout}ms`);
+                resolve([false]);
             }, timeout);
 
-            this._pcsc.on('status', function(status) {
+            let actualReader = this._reader;
+
+            actualReader.on('status', function(status) {
             
                 var changes = this.state ^ status.state;
                 if (changes) {
                     if ((changes & this.SCARD_STATE_PRESENT) && (status.state & this.SCARD_STATE_PRESENT)) {
                         console.log("card inserted");/* card inserted */
-                        this._pcsc.reader.connect({ share_mode : this.SCARD_SHARE_SHARED }, function(err, protocol) {
+                        actualReader.connect({ share_mode : this.SCARD_SHARE_SHARED }, function(err, protocol) {
                             if (err) {
 
                                 console.log(err);
                                 reject(`Connect error: ${err}`);
                             } else {
 
-                                console.log('Protocol(', this._pcsc.reader.name, '):', protocol);
+                                console.log('Protocol(', actualReader.name, '):', protocol);
                                 console.log('ATR: ', status.atr);
 
                                 clearTimeout(cmdTimeout);
@@ -126,7 +138,7 @@ export class TsCard {
                 resolve(false);
             }, timeout);
 
-            this._pcsc.on('status', function(status) {
+            this._reader.on('status', function(status) {
 
                 var changes = this.state ^ status.state;
                 if (changes) {
