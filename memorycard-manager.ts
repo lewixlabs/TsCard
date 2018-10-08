@@ -1,15 +1,14 @@
 // For Node/CommonJS
 // https://www.typescriptlang.org/docs/handbook/migrating-from-javascript.html
-declare function require(path: string): any;
+//declare function require(path: string): any;
 
-import pcsc1 = require('pcsclite');
- import Buffer = require('buffer');
+import * as Pcsc from "pcsclite";
 
 export class MemoryCardManager {
     static WaitForSle() : void{
 
-        let pcsc = new pcsc1();
-        pcsc.close();
+        let pcsc = new Pcsc();
+        
         pcsc.on('reader', function(reader) {
         
             console.log('New reader detected', reader.name);

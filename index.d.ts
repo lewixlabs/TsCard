@@ -89,5 +89,4 @@ interface CardReader extends EventEmitter {
 }
 
 declare function pcsc(): PCSCLite;
-
 export = pcsc;
