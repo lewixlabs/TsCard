@@ -24,26 +24,23 @@ export class TsPcscLite {
     }
 
     async detectReader() : Promise<string> {
-        return new Promise<string>(resolve => {
-    
-            setTimeout(() => {
 
-                resolve("ok detectReader");
-            }, 3000);
-            
-        });
 
         // return new Promise<string>(resolve => {
-        //     console.log("detectReader...")
+    
         //     setTimeout(() => {
-        //         console.log("timeout!");
-        //         resolve("eccolo!!")
-        //     }, 4000);
 
-            // this._pcsc.on('reader', function(reader) {
-            //     return resolve(reader.name);
-            // });
-        //});
+        //         resolve("ok detectReader");
+        //     }, 3000);
+            
+        // });
+
+        return new Promise<string>(resolve => {
+            
+            this._pcsc.on('reader', function(reader) {
+                return resolve(reader.name);
+            });
+        });
     }
 
     close() : void {

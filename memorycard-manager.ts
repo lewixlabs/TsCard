@@ -13,8 +13,6 @@ export class MemoryCardManager {
         let tsPcsc = TsPcscLite.instance;
         let readerName : string = await tsPcsc.detectReader();
         console.log(readerName);
-
-        tsPcsc.close();
     }
 
     private static async _Dummy() : Promise<string> {
