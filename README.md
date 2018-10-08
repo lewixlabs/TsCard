@@ -1,4 +1,4 @@
-# memory-card
-NodeJS library for SLExx28/SLExx42 synchronous cards, working upon [pcsclite wrapper](https://github.com/santigimeno/node-pcsclite).
+# TsPscsLite
+Typescript pcsclite wrapper library to support memory cards too.
 
 This library uses a proprietary protocol to handle (read/write/verifyPsc) SLE memory cards, depending on the manufacturer reader
