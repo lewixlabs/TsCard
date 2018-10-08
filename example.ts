@@ -13,7 +13,7 @@ class Example {
             console.log(`Reader detected:${readerName}`);
 
             let cardInfo : [boolean , SmartCard] = await tsPcsc.insertCard(5000);
-            console.log(`Smartcard inserted:${SmartCard}`);
+            console.log(`Smartcard inserted:${cardInfo["0"]}\nSmartCard: ${cardInfo["1"]}`);
         }
         catch (error) {
             console.log(`Error!\n${error}`)
