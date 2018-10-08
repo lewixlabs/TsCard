@@ -2,9 +2,9 @@
   "name": "memory-card",
   "version": "1.0.0",
   "description": "library for SLExx28/SLExx42 synchronous cards",
-  "main": "index.ts",
+  "main": "example.ts",
   "scripts": {
-    "start": "node index.js",
+    "start": "node example.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

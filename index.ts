@@ -1,8 +1,52 @@
-import  { Sle } from './memorycard';
-import { MemoryCardManager } from './memorycard-manager'
+import * as Pcsc from "pcsclite";
 
-let mySle = new Sle([1,2,3.4]);
-console.log(mySle.cardType);
+export class TsPcscLite {
+    private static _instance : TsPcscLite;
+    private _pcsc : Pcsc;
 
-MemoryCardManager.WaitForSle();
+    constructor() {
 
+        this._pcsc = new Pcsc();
+    }
+
+    greeting: string;
+ 
+    greet() {
+        return "Hello, " + this.greeting;
+    }
+
+    static get instance () : TsPcscLite {
+
+        if (this._instance == null)
+            this._instance = new TsPcscLite();
+
+        return this._instance;
+    }
+
+    async detectReader() : Promise<string> {
+        return new Promise<string>(resolve => {
+    
+            setTimeout(() => {
+
+                resolve("ok detectReader");
+            }, 3000);
+            
+        });
+
+        // return new Promise<string>(resolve => {
+        //     console.log("detectReader...")
+        //     setTimeout(() => {
+        //         console.log("timeout!");
+        //         resolve("eccolo!!")
+        //     }, 4000);
+
+            // this._pcsc.on('reader', function(reader) {
+            //     return resolve(reader.name);
+            // });
+        //});
+    }
+
+    close() : void {
+        this._pcsc.close();
+    }
+}
