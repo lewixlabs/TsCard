@@ -1,4 +1,4 @@
-import { TsPcscLite } from './index';
+import { TsPcscLite, SmartCard } from './index';
 
 class Example {
     static async main() {
@@ -9,8 +9,11 @@ class Example {
 
         try {
 
-            let readerName : string = await tsPcsc.detectReader();
+            let readerName : string = await tsPcsc.detectReader(1000);
             console.log(`Reader detected:${readerName}`);
+
+            let cardInfo : [boolean , SmartCard] = await tsPcsc.insertCard(5000);
+            console.log(`Smartcard inserted:${SmartCard}`);
         }
         catch (error) {
             console.log(`Error!\n${error}`)
