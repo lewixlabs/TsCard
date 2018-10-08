@@ -1,10 +1,10 @@
-import { TsPcscLite, SmartCard } from './index';
+import { TsCard, SmartCard } from './index';
 
 class Example {
     static async main() {
 
         console.log("Example started...");
-        let tsPcsc = TsPcscLite.instance;
+        let tsPcsc = TsCard.instance;
         console.log("Waiting for reader plugged...");
 
         try {

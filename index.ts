@@ -23,8 +23,8 @@ export class SmartCard {
     }
 }
 
-export class TsPcscLite {
-    private static _instance : TsPcscLite;
+export class TsCard {
+    private static _instance : TsCard;
     private _pcsc : Pcsc;
 
     private readonly _defaultTimeout;
@@ -35,10 +35,10 @@ export class TsPcscLite {
         this._defaultTimeout = 15000;
     }
 
-    static get instance () : TsPcscLite {
+    static get instance () : TsCard {
 
         if (this._instance == null)
-            this._instance = new TsPcscLite();
+            this._instance = new TsCard();
 
         return this._instance;
     }
