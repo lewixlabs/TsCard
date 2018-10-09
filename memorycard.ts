@@ -1,7 +1,15 @@
-enum CardTypes {
-    SLE5528,
-    SLE5542
+import SmartCard  from './smartcard';
+import { ApduResponse } from './reader';
+
+enum MemoryCardTypes {
+    SLE5528 = 0x05,
+    SLE5542 
 }
+
+const sizeMap = new Map<MemoryCardTypes,number>([
+    [MemoryCardTypes.SLE5528,1024],
+    [MemoryCardTypes.SLE5542,256]
+]);
 
 interface IMemoryCard {
      readBytes(offset: number, length: number) : Array<number>;
@@ -9,9 +17,7 @@ interface IMemoryCard {
      verifyPSC(psc: Array<number>) : boolean;
 }
 
-abstract class MemoryCard implements IMemoryCard {
-    atr: Array<number>;
-    size: number;
+abstract class MemoryCard extends SmartCard implements IMemoryCard {
 
     abstract readBytes(offset: number, length: number) : Array<number>;
     abstract writeBytes(offset: number, length: number, buffer: number) : boolean;
@@ -20,26 +26,57 @@ abstract class MemoryCard implements IMemoryCard {
 
 export class Sle extends MemoryCard {
     
-    private _cardType : CardTypes;
+    private _cardType : MemoryCardTypes;
+    private _size : number;
+    private _reader : any;
 
-    constructor(prmAtr : Array<number>){
-        super();
+    constructor(reader : any, atr : Array<number>, protocol : number){
+        super(atr,protocol);
 
-        this.atr = prmAtr;
-        console.log(this.atr.toString());
-        switch (this.atr.toString()){
+        this._reader = reader;
+
+        console.log(this._atr.toString());
+        switch (this._atr.toString()){
 
             case "1,2,3,4":
-                this.size = 256;
-                this._cardType = CardTypes.SLE5542;
+                this._cardType = MemoryCardTypes.SLE5542;
+                this._size = sizeMap.get(this._cardType);
+                
                 break;
         }
+
+        this.init(this._cardType);
     }
 
-     get cardType() {
-         return this._cardType;
-     }
-     
+    private async init(cardType : MemoryCardTypes) : Promise<boolean> {
+
+        return new Promise<boolean>(async (resolve,reject) => {
+
+            try {
+
+                let apduResult : ApduResponse = await this._reader.sendApdu(
+                    this,
+                    {
+                        Cla: 0xFF,
+                        Ins: 0xA4,
+                        P1: 0x00,
+                        P2: 0x00,
+                        Le: 0
+                    },
+                    this._cardType
+                );
+
+                resolve(apduResult.SW == [0x90, 0x00] ? true : false);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
+    get cardType() {
+        return this._cardType;
+    }
+    
 
     readBytes(offset: number, length: number) : Array<number> {
         return null;
@@ -48,7 +85,7 @@ export class Sle extends MemoryCard {
     writeBytes(offset: number, length: number, buffer: number) : boolean {
         return true;
     }
-
+ 
     verifyPSC(psc: Array<number>) : boolean {
         return true;
     }

@@ -1,8 +1,6 @@
 export default class SmartCard {
 
-    constructor( private _atr : Array<number>, private _protocol: number){
-
-    }
+    constructor( protected _atr : Array<number>, protected _protocol: number){}
 
     get atr() : Array<number> {
         return this._atr;
