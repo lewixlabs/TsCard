@@ -1,4 +1,6 @@
-import { TsCard, SmartCard } from './index';
+import { TsCard } from './index';
+import Reader, { ApduResponse } from './reader';
+import SmartCard from './smartcard';
 
 class Example {
     static async main() {
@@ -9,16 +11,30 @@ class Example {
 
         try {
 
-            let readerName : string = await tsPcsc.detectReader(15000);
-            if (readerName != null && readerName.length > 0) {
+            let cardReader : Reader = await tsPcsc.detectReader(15000);
+            if (cardReader != null) {
 
-                console.log(`Reader detected:${readerName}`);
+                console.log(`Reader detected:${cardReader.name}`);
 
                 let cardInfo : [boolean , SmartCard?] = await tsPcsc.insertCard(15000);
                 if (cardInfo[0])
-                    console.log(`Smartcard inserted:${cardInfo["0"]}\nSmartCard: ${cardInfo["1"]}`);
+                    console.log(`Smartcard inserted:${cardInfo["0"]}\nSmartCard ATR: ${cardInfo["1"].atr}`);
                 else
                     console.log(`Smartcard inserted:${cardInfo["0"]}`);
+
+                console.log("Read MasterFile DF...");
+                let apduResult : ApduResponse = await cardReader.sendApdu(
+                    cardInfo[1],
+                    {
+                        Cla: 0x00,
+                        Ins: 0xA4,
+                        P1: 0x00,
+                        P2: 0x00,
+                        Le: 80
+                    },
+                    [ 0x99, 0x99]
+                );
+                console.log(`SW: ${apduResult.SW}\nData Received: ${apduResult.Data}`);
             }
         }
         catch (error) {

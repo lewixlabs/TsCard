@@ -1,41 +1,13 @@
-import * as Pcsc from "pcsclite";
-
-export class SmartCard {
-    //private _atr: Array<number>;
-    //private _protocol: number;
-
-    constructor(private _atr : Array<number>, private _protocol: number){
-
-    }
-
-    get atr() : Array<number> {
-        return this._atr;
-    }
-
-    get protocol() : number {
-        return this._protocol;
-    }
-
-    sendApdu() : [Array<number>/* Status Word*/, Array<number>? /* Optional return data*/] {
-
-        // TODO
-        return [[0x90, 0x00]];
-    }
-}
-
-export class Reader {
-
-    constructor(private _pcscReader : any) {
-
-    }
-}
+import * as Pcsc from 'pcsclite';
+import Reader from './reader';
+import SmartCard from './smartcard';
 
 export class TsCard {
     private static _instance : TsCard;
     private _pcsc : Pcsc;
     private _reader : any;
 
-    private readonly _defaultTimeout;
+    private readonly _defaultTimeout : number;
 
     constructor() {
 
@@ -52,12 +24,12 @@ export class TsCard {
         return this._instance;
     }
 
-    async detectReader(timeout? : number) : Promise<string> {
+    async detectReader(timeout? : number) : Promise<Reader> {
 
         if (timeout == null)
             timeout = this._defaultTimeout;
 
-        return new Promise<string>((resolve,reject) => {
+        return new Promise<Reader>((resolve,reject) => {
 
             let cmdTimeout = setTimeout(() => {
 
@@ -69,12 +41,11 @@ export class TsCard {
                
                 this._reader = reader;
                 clearTimeout(cmdTimeout);
-                return resolve(reader.name);
+                return resolve(new Reader(reader));
             });
 
             this._pcsc.on('error', function(err) {
 
-                console.log('PCSC error', err.message);
                 reject(`PCSC error: ${err}`);
             });
         });
@@ -99,19 +70,15 @@ export class TsCard {
                 var changes = this.state ^ status.state;
                 if (changes) {
                     if ((changes & this.SCARD_STATE_PRESENT) && (status.state & this.SCARD_STATE_PRESENT)) {
-                        console.log("card inserted");/* card inserted */
+                        /* card inserted */
                         actualReader.connect({ share_mode : this.SCARD_SHARE_SHARED }, function(err, protocol) {
                             if (err) {
 
-                                console.log(err);
                                 reject(`Connect error: ${err}`);
                             } else {
 
-                                console.log('Protocol(', actualReader.name, '):', protocol);
-                                console.log('ATR: ', status.atr);
-
                                 clearTimeout(cmdTimeout);
-                                return resolve([true,new SmartCard(status.atr, protocol)]);
+                                return resolve([true,new SmartCard([...status.atr], protocol)]);
                             }
                         });
                     }
@@ -120,7 +87,6 @@ export class TsCard {
 
             this._pcsc.on('error', function(err) {
 
-                console.log('PCSC error', err.message);
                 reject(`PCSC error: ${err}`);
             });
         });
@@ -143,16 +109,14 @@ export class TsCard {
                 var changes = this.state ^ status.state;
                 if (changes) {
                     if ((changes & this.SCARD_STATE_EMPTY) && (status.state & this.SCARD_STATE_EMPTY)) {
-                        console.log("card removed");/* card removed */
+                        /* card removed */
                         this._pcsc.reader.disconnect(this._pcsc.reader.SCARD_LEAVE_CARD, function(err) {
                             if (err) {
 
-                                console.log(err);
                                 reject(`Disconnect error: ${err}`);
                             } else {
 
                                 resolve(true);
-                                console.log('Disconnected');
                             }
                         });
                         
@@ -163,7 +127,11 @@ export class TsCard {
     }
 
     close() : void {
-        this._pcsc.close();
+        if (this._reader)
+            this._reader.close();
+        
+        if (this._pcsc)
+            this._pcsc.close();
     }
 
     // static RawDemo() : void {
