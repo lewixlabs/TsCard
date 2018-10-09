@@ -32,7 +32,7 @@ class Example {
                         P2: 0x00,
                         Le: 80
                     },
-                    [ 0x99, 0x99]
+                    [ 0x3F, 0x00]
                 );
                 console.log(`SW: ${apduResult.SW}\nData Received: ${apduResult.Data}`);
             }
