@@ -1,10 +1,18 @@
 import SmartCard  from './smartcard';
 import { ApduResponse } from './reader';
 
+
+
 enum MemoryCardTypes {
     SLE5528 = 0x05,
     SLE5542 
 }
+
+// SLE5528 ATR with ACR38 Reader: 3b492231091
+export const ATR_SLE5528 : Array<number> = [ 0x92, 0x23, 0x10, 0x91 ];
+
+// SLE5542 ATR with ACR38 Reader: 3b4a2131091
+export const ATR_SLE5542 : Array<number> = [ 0xA2, 0x13, 0x10, 0x91 ];
 
 const sizeMap = new Map<MemoryCardTypes,number>([
     [MemoryCardTypes.SLE5528,1024],

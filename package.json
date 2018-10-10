@@ -11,7 +11,9 @@
   "license": "ISC",
   "devDependencies": {
     "@types/buffers": "^0.1.31",
-    "pcsclite": "^0.6.0",
     "events": "^3.0.0"
+  },
+  "dependencies": {
+    "pcsclite": "^0.6.0"
   }
 }

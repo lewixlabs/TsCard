@@ -17,8 +17,14 @@ class Example {
                 console.log(`Reader detected:${cardReader.name}`);
 
                 let cardInfo : [boolean , SmartCard?] = await tsPcsc.insertCard(15000);
-                if (cardInfo[0])
-                    console.log(`Smartcard inserted:${cardInfo["0"]}\nSmartCard ATR: ${cardInfo["1"].atr}`);
+                if (cardInfo[0]){
+                    let atrHex : string = "";
+                    cardInfo[1].atr.map(val => {
+                        atrHex += val.toString(16);
+                    });
+                    console.log(`Smartcard inserted:${cardInfo["0"]}\nSmartCard ATR: ${atrHex}`);
+                }
+                    
                 else
                     console.log(`Smartcard inserted:${cardInfo["0"]}`);
 
