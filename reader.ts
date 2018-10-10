@@ -1,4 +1,4 @@
-import SmartCard from "./smartcard";
+import SmartCard from "./cards/smartcard";
 
 export interface Apdu {
     Cla : number;

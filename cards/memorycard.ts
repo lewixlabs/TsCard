@@ -1,5 +1,7 @@
 import SmartCard  from './smartcard';
-import { ApduResponse } from './reader';
+import { ApduResponse } from '../reader';
+import Utilities from '../utilities';
+import Reader from '../reader';
 
 
 
@@ -8,11 +10,11 @@ enum MemoryCardTypes {
     SLE5542 
 }
 
-// SLE5528 ATR with ACR38 Reader: 3b492231091
-export const ATR_SLE5528 : Array<number> = [ 0x92, 0x23, 0x10, 0x91 ];
-
-// SLE5542 ATR with ACR38 Reader: 3b4a2131091
-export const ATR_SLE5542 : Array<number> = [ 0xA2, 0x13, 0x10, 0x91 ];
+const SupportedSle : Array<Array<number>> = [
+    [ 0x92, 0x23, 0x10, 0x91 ], // SLE5528 ATR with ACR38 Reader: 3b492231091
+    [ 0xB4, 0x23, 0x10, 0x91 ], // SLE5528 ATR with ACR38 Reader: 3b4b4231091
+    [ 0xA2, 0x13, 0x10, 0x91 ]  // SLE5542 ATR with ACR38 Reader: 3b4a2131091
+]
 
 const sizeMap = new Map<MemoryCardTypes,number>([
     [MemoryCardTypes.SLE5528,1024],
@@ -38,8 +40,8 @@ export class Sle extends MemoryCard {
     private _size : number;
     private _reader : any;
 
-    constructor(reader : any, atr : Array<number>, protocol : number){
-        super(atr,protocol);
+    constructor(reader : Reader, atr : Array<number>, protocol : number){
+        super(atr, protocol, true);
 
         this._reader = reader;
 
@@ -56,22 +58,47 @@ export class Sle extends MemoryCard {
         this.init(this._cardType);
     }
 
+    static isSupportedMemoryCard(reader : any, atr : Array<number>) : boolean {
+        let readerSupported = false;
+        let isMemoryCard = false;
+
+        // reader check
+        if (reader && reader.name && typeof(reader.name) === "string")
+            readerSupported = reader.name.toUpperCase().includes("ACR 38") || reader.name.toUpperCase().includes("ACR38");
+
+        // atr check
+        if (atr){
+
+            let atrHex : string = Utilities.BytesToHexString(atr);
+
+            isMemoryCard = SupportedSle.some(currentAtr => {
+
+                if (atrHex.includes(Utilities.BytesToHexString(currentAtr)))
+                    return true;
+            });            
+        }
+            
+        return (readerSupported && isMemoryCard);
+    }
+
     private async init(cardType : MemoryCardTypes) : Promise<boolean> {
 
+        let actualReader = this._reader;
+        let actualCardType = cardType;
         return new Promise<boolean>(async (resolve,reject) => {
 
             try {
 
-                let apduResult : ApduResponse = await this._reader.sendApdu(
+                let apduResult : ApduResponse = await actualReader.sendApdu(
                     this,
                     {
                         Cla: 0xFF,
                         Ins: 0xA4,
                         P1: 0x00,
                         P2: 0x00,
-                        Le: 0
+                        Le: 80
                     },
-                    this._cardType
+                    [[0x05]]
                 );
 
                 resolve(apduResult.SW == [0x90, 0x00] ? true : false);

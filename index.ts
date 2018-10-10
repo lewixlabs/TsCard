@@ -1,7 +1,8 @@
 import * as Pcsc from 'pcsclite';
 import Reader from './reader';
-import SmartCard from './smartcard';
-import { ATR_SLE5528, ATR_SLE5542 } from './memorycard';
+import SmartCard from './cards/smartcard';
+import { Sle } from './cards/memorycard';
+import Utilities from './utilities';
 
 export class TsCard {
     private static _instance : TsCard;
@@ -52,22 +53,6 @@ export class TsCard {
         });
     }
 
-    private isSupportedMemoryCard(reader : any, card : SmartCard) : boolean {
-        let readerSupported = false;
-        let isMemoryCard = false;
-
-
-        // reader check
-        if (reader && reader.name && typeof(reader.name) === "string")
-            readerSupported = reader.name.toUpperCase().includes("ACR 38") || reader.name.toUpperCase().includes("ACR38");
-
-        // atr check
-        if (card.atr)
-            isMemoryCard = card.atr.toString().includes(ATR_SLE5528.toString()) || card.atr.toString().includes(ATR_SLE5542.toString());
-
-        return (readerSupported && isMemoryCard);
-    }
-
     async insertCard(timeout? : number) : Promise<[boolean,SmartCard?]> {
 
         if (timeout == null)
@@ -95,7 +80,10 @@ export class TsCard {
                             } else {
 
                                 clearTimeout(cmdTimeout);
-                                return resolve([true,new SmartCard([...status.atr], protocol)]);
+                                if (Sle.isSupportedMemoryCard(actualReader,[...status.atr]))
+                                    return resolve([true, new Sle(new Reader(actualReader), [...status.atr], protocol)]);
+                                else
+                                    return resolve([true,new SmartCard([...status.atr], protocol)]);
                             }
                         });
                     }
