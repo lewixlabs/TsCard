@@ -22,14 +22,14 @@ const sizeMap = new Map<MemoryCardTypes,number>([
 ]);
 
 interface IMemoryCard {
-     readBytes(offset: number, length: number) : Array<number>;
+     readBytes(offset: number, length: number) : Promise<[boolean,Array<number>]>;
      writeBytes(offset: number, length: number, buffer: number) : boolean;
      verifyPSC(psc: Array<number>) : boolean;
 }
 
 abstract class MemoryCard extends SmartCard implements IMemoryCard {
 
-    abstract readBytes(offset: number, length: number) : Array<number>;
+    abstract readBytes(offset: number, length: number) : Promise<[boolean,Array<number>]>;
     abstract writeBytes(offset: number, length: number, buffer: number) : boolean;
     abstract verifyPSC(psc: Array<number>) : boolean;
 }
@@ -38,14 +38,17 @@ export class Sle extends MemoryCard {
     
     private _cardType : MemoryCardTypes;
     private _size : number;
-    private _reader : any;
+    private _reader : Reader;
+    private _initialized : boolean;
 
     constructor(reader : Reader, atr : Array<number>, protocol : number){
         super(atr, protocol, true);
+        this._initialized = false;
 
         this._reader = reader;
 
         console.log(this._atr.toString());
+        this._cardType = MemoryCardTypes.SLE5528;
         switch (this._atr.toString()){
 
             case "1,2,3,4":
@@ -54,8 +57,6 @@ export class Sle extends MemoryCard {
                 
                 break;
         }
-
-        this.init(this._cardType);
     }
 
     static isSupportedMemoryCard(reader : any, atr : Array<number>) : boolean {
@@ -81,11 +82,22 @@ export class Sle extends MemoryCard {
         return (readerSupported && isMemoryCard);
     }
 
-    private async init(cardType : MemoryCardTypes) : Promise<boolean> {
-
+    async dummy() : Promise<void> {
+     
+        let actualInitStatus = this._initialized;
         let actualReader = this._reader;
-        let actualCardType = cardType;
+        let actualCardType = this._cardType.valueOf();
+    }
+
+    async init() : Promise<boolean> {
+
         return new Promise<boolean>(async (resolve,reject) => {
+
+            if (this._initialized)
+                resolve(true);
+
+            let actualReader = this._reader;
+            let actualCardType = this._cardType.valueOf();
 
             try {
 
@@ -96,12 +108,13 @@ export class Sle extends MemoryCard {
                         Ins: 0xA4,
                         P1: 0x00,
                         P2: 0x00,
-                        Le: 80
+                        Le: 0,
+                        Lc: 1
                     },
-                    [[0x05]]
+                    [actualCardType]
                 );
 
-                resolve(apduResult.SW == [0x90, 0x00] ? true : false);
+                resolve(apduResult.SW[0] == 0x90 && apduResult.SW[1] ==  0x00 ? true : false);
             } catch (error) {
                 reject(error);
             }
@@ -113,7 +126,41 @@ export class Sle extends MemoryCard {
     }
     
 
-    readBytes(offset: number, length: number) : Array<number> {
+    async readBytes(offset: number, length: number) : Promise<[boolean,Array<number>]> {
+        
+        return new Promise<[boolean,Array<number>]>(async (resolve,reject) => {
+
+            let actualReader = this._reader;
+            let actualCardType = this._cardType;
+    
+            let canRead : boolean = await this.init();
+            if (!canRead)
+                reject([false,null]);
+
+            try {
+
+                let apduResult : ApduResponse = await actualReader.sendApdu(
+                    this,
+                    {
+                        Cla: 0xFF,
+                        Ins: 0xB0,
+                        P1: offset,
+                        P2: 0x00,
+                        Le: length,
+                        Lc: 0
+                    },
+                    null
+                );
+
+                resolve([apduResult.SW == [0x90, 0x00] ? true : false,null]);
+            } catch (error) {
+                reject(error);
+            }
+        });
+
+
+
+            
         return null;
     }
 

@@ -11,6 +11,9 @@ class Example {
         let tsPcsc = TsCard.instance;
         console.log("Waiting for reader plugged...");
 
+        //TsCard.rawDemo();
+        //return;
+
         try {
 
             let cardReader : Reader = await tsPcsc.detectReader(15000);
@@ -45,11 +48,19 @@ class Example {
                             Ins: 0xA4,
                             P1: 0x00,
                             P2: 0x00,
-                            Le: 80
+                            Le: 80,
+                            Lc: 0x02
                         },
                         [ 0x3F, 0x00]
                     );
                     console.log(`SW: ${apduResult.SW}\nData Received: ${apduResult.Data}`);
+                } else {
+
+                    if (cardInfo[1] instanceof Sle){
+
+                        let mySle : Sle = cardInfo[1];
+                        let retRead = await mySle.readBytes(32,10);
+                    }
                 }
             }
         }

@@ -6,6 +6,7 @@ export interface Apdu {
     P1 : number;
     P2 : number;
     Le : number;
+    Lc : number;
 }
 
 export interface ApduResponse {
@@ -38,11 +39,12 @@ export default class Reader {
                 reject(`Timeout: no apdu response after ${timeout}ms`);
             }, timeout);
 
-            let apduBuffer : Array<number> = [cmd.Cla, cmd.Ins, cmd.P1, cmd.P2];
-            apduBuffer.push(...dataIn);
+            let apduBuffer : Array<number> = [cmd.Cla, cmd.Ins, cmd.P1, cmd.P2, cmd.Lc];
+            if (dataIn)
+                apduBuffer.push(...dataIn);
             
             //this._pcscReader.transmit(new Buffer([0xFF, 0xA4, 0x00, 0x00, 0x01, 0x06]), 40, card.protocol, function(err, data) {
-            this._pcscReader.transmit(Buffer.from(apduBuffer), cmd.Le, card.protocol, function(err, data) {
+            this._pcscReader.transmit(Buffer.from(apduBuffer), cmd.Le + 2, card.protocol, function(err, data) {
                 if (err) {
                     reject(`Apdu error: ${err}`);
                 } else {
