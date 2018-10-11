@@ -5,6 +5,10 @@ import { Sle } from './cards/memorycard';
 import Utilities from './utilities';
 
 class Example {
+    static rawTest(){
+        TsCard.rawDemo();
+    }
+
     static async main() {
 
         console.log("Example started...");
@@ -53,13 +57,15 @@ class Example {
                         },
                         [ 0x3F, 0x00]
                     );
-                    console.log(`SW: ${apduResult.SW}\nData Received: ${apduResult.Data}`);
+                    console.log(`SW: ${apduResult.SW}\nData Received: ${Utilities.BytesToHexString(apduResult.Data)}`);
                 } else {
 
                     if (cardInfo[1] instanceof Sle){
 
-                        let mySle : Sle = cardInfo[1];
-                        let retRead = await mySle.readBytes(32,10);
+                        console.log("reading 100 bytes from offset #32...");
+                        let mySle = cardInfo[1] as Sle;
+                        let retRead = await mySle.readBytes(32, 100);
+                        console.log(`SLE Read Result: ${retRead[0]}\nBytes Read: ${Utilities.BytesToHexString(retRead[1])}`);
                     }
                 }
             }
@@ -77,4 +83,5 @@ class Example {
     }
 }
 
+//Example.rawTest();
 Example.main();

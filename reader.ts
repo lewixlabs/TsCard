@@ -43,7 +43,6 @@ export default class Reader {
             if (dataIn)
                 apduBuffer.push(...dataIn);
             
-            //this._pcscReader.transmit(new Buffer([0xFF, 0xA4, 0x00, 0x00, 0x01, 0x06]), 40, card.protocol, function(err, data) {
             this._pcscReader.transmit(Buffer.from(apduBuffer), cmd.Le + 2, card.protocol, function(err, data) {
                 if (err) {
                     reject(`Apdu error: ${err}`);

@@ -175,7 +175,7 @@ export class TsCard {
                                 console.log('ATR: ', status.atr);
                                 
                                 
-                                
+                                console.log('Select CardType');
                                 reader.transmit(new Buffer([0xFF, 0xA4, 0x00, 0x00, 0x01, 0x05]), 2, protocol, function(err, data) {
                                     if (err) {
                                         console.log(err);
@@ -184,6 +184,18 @@ export class TsCard {
                                         reader.close();
                                         pcsc.close();
                                     }
+
+                                    console.log('Read Bytes2');
+                                    reader.transmit(new Buffer([0xFF, 0xB0, 0x00, 35, 0x10]), 100, protocol, function(err, data) {
+                                        if (err) {
+                                            console.log(err);
+                                        } else {
+                                            console.log('Data received', data);
+                                            reader.close();
+                                            pcsc.close();
+                                        }
+                                    });
+
                                 });
                             }
                         });
