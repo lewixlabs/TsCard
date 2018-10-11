@@ -1,6 +1,6 @@
 {
   "name": "memory-card",
-  "version": "1.0.0",
+  "version": "0.8.0",
   "description": "library for SLExx28/SLExx42 synchronous cards",
   "main": "example.ts",
   "scripts": {
@@ -9,11 +9,9 @@
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
+  "dependencies": {
+    "pcsclite": "^0.6.0",
     "@types/buffers": "^0.1.31",
     "events": "^3.0.0"
-  },
-  "dependencies": {
-    "pcsclite": "^0.6.0"
   }
 }
