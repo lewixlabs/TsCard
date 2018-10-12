@@ -6,7 +6,7 @@ import Utilities from './utilities';
 
 class Example {
     static rawTest(){
-        TsCard.rawDemo();
+        //TsCard.rawDemo();
     }
 
     static async main() {
@@ -14,9 +14,6 @@ class Example {
         console.log("Example started...");
         let tsPcsc = TsCard.instance;
         console.log("Waiting for reader plugged...");
-
-        //TsCard.rawDemo();
-        //return;
 
         try {
 
@@ -32,7 +29,7 @@ class Example {
                     cardInfo[1].atr.map(val => {
                         atrHex += val.toString(16);
                     });
-                    console.log(`Smartcard inserted:${cardInfo["0"]}\nSmartCard ATR: ${Utilities.BytesToHexString(cardInfo[1].atr)}`);
+                    console.log(`Smartcard inserted:${cardInfo["0"]}\nSmartCard ATR: ${Utilities.bytesToHexString(cardInfo[1].atr)}`);
                     
                     console.log(`Is SmartCard Object? ${cardInfo[1] instanceof SmartCard}`);
                     console.log(`Is Sle Object? ${cardInfo[1] instanceof Sle}`);
@@ -57,15 +54,15 @@ class Example {
                         },
                         [ 0x3F, 0x00]
                     );
-                    console.log(`SW: ${apduResult.SW}\nData Received: ${Utilities.BytesToHexString(apduResult.Data)}`);
+                    console.log(`SW: ${apduResult.SW}\nData Received: ${Utilities.bytesToHexString(apduResult.Data)}`);
                 } else {
 
                     if (cardInfo[1] instanceof Sle){
 
                         console.log("reading 100 bytes from offset #32...");
                         let mySle = cardInfo[1] as Sle;
-                        let retRead = await mySle.readBytes(32, 100);
-                        console.log(`SLE Read Result: ${retRead[0]}\nBytes Read: ${Utilities.BytesToHexString(retRead[1])}`);
+                        let retRead = await mySle.readBytes(0, 256);
+                        console.log(`SLE Read Result: ${retRead[0]}\nBytes Read: ${Utilities.bytesToHexString(retRead[1])}`);
                     }
                 }
             }

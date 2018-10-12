@@ -16,21 +16,21 @@ interface SleSupported {
 
 const ACR38SupportedMemoryCards = new Map<string,SleSupported> ([
         [
-            Utilities.BytesToHexString([ 0x3B, 0x04, 0x92, 0x23, 0x10, 0x91 ]), // SLE5528 ATR with ACR38 Reader: 3b492231091
+            Utilities.bytesToHexString([ 0x3B, 0x04, 0x92, 0x23, 0x10, 0x91 ]), // SLE5528 ATR with ACR38 Reader: 3b492231091
             {
                 type: MemoryCardTypes.SLE5528,
                 size : 1024
             }
         ],
         [
-            Utilities.BytesToHexString([ 0x3B, 0x04, 0xB4, 0x23, 0x10, 0x91 ]), // SLE5528 ATR with ACR38 Reader: 3b4b4231091
+            Utilities.bytesToHexString([ 0x3B, 0x04, 0xB4, 0x23, 0x10, 0x91 ]), // SLE5528 ATR with ACR38 Reader: 3b4b4231091
             {
                 type : MemoryCardTypes.SLE5528,
                 size : 1024
             }
         ],
         [
-            Utilities.BytesToHexString([ 0x3B, 0x04, 0xA2, 0x13, 0x10, 0x91 ]), // SLE5542 ATR with ACR38 Reader: 3b4a2131091
+            Utilities.bytesToHexString([ 0x3B, 0x04, 0xA2, 0x13, 0x10, 0x91 ]), // SLE5542 ATR with ACR38 Reader: 3b4a2131091
             {
                 type : MemoryCardTypes.SLE5542,
                 size : 256
@@ -66,7 +66,7 @@ export class Sle extends MemoryCard {
         this._initialized = false;
         this._reader = reader;
                      
-        let atrHex : string = Utilities.BytesToHexString(atr);
+        let atrHex : string = Utilities.bytesToHexString(atr);
         this._cardType = ACR38SupportedMemoryCards.get(atrHex).type;
         this._size = ACR38SupportedMemoryCards.get(atrHex).size;
     }
@@ -82,7 +82,7 @@ export class Sle extends MemoryCard {
         // atr check
         if (atr){
 
-            let atrHex : string = Utilities.BytesToHexString(atr);
+            let atrHex : string = Utilities.bytesToHexString(atr);
             isMemoryCard = ACR38SupportedMemoryCards.has(atrHex);         
         }
             
@@ -146,8 +146,8 @@ export class Sle extends MemoryCard {
                     {
                         Cla: 0xFF,
                         Ins: 0xB0,
-                        P1: 0x00,
-                        P2: offset,
+                        P1: Utilities.highestByteFromShort(offset),
+                        P2: Utilities.lowestByteFromShort(offset),
                         Le: 2 /* SW */ + length,
                         Lc: length /* length byte */
                     },

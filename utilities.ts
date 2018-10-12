@@ -1,7 +1,7 @@
 
 export default class Utilities {
 
-    static BytesToHexString(bytesArray : Array<number>) : string {
+    static bytesToHexString(bytesArray : Array<number>) : string {
 
         let atrHex : string = "";
         if (bytesArray && bytesArray.length > 0)
@@ -14,5 +14,8 @@ export default class Utilities {
 
         return atrHex;
     }
+
+    static lowestByteFromShort = (short : number) => short & 0x00FF;
+    static highestByteFromShort = (short : number) => (short & 0xFF00) >> 8;
 }
 
