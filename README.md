@@ -4,7 +4,8 @@ Typescript [pcsclite](https://github.com/lewixlabs/TsCard) wrapper library to su
 ## Memory Cards
 This library, with supported manufacturer readers, uses a proprietary protocol to handle (read/write/verifyPsc) SLE memory cards.
 
-Actual reader supported is ACR38
+Actual reader supported is ACR38.
+
 Specifications here:
 http://downloads.acs.com.hk/drivers/en/PMA_ACR38x(CCID)_v6.01.pdf
 
