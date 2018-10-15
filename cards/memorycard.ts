@@ -42,14 +42,14 @@ const ACR38SupportedMemoryCards = new Map<string,SleSupported> ([
 
 interface IMemoryCard {
      readBytes(offset: number, length: number) : Promise<[boolean,Array<number>]>;
-     writeBytes(offset: number, length: number, buffer: number) : boolean;
+     writeBytes(offset: number, length: number, buffer: number) : Promise<boolean>;
      verifyPSC(psc: Array<number>) : boolean;
 }
 
 abstract class MemoryCard extends SmartCard implements IMemoryCard {
 
     abstract readBytes(offset: number, length: number) : Promise<[boolean,Array<number>]>;
-    abstract writeBytes(offset: number, length: number, buffer: number) : boolean;
+    abstract writeBytes(offset: number, length: number, buffer: number) : Promise<boolean>;
     abstract verifyPSC(psc: Array<number>) : boolean;
 }
 
@@ -132,12 +132,18 @@ export class Sle extends MemoryCard {
     async readBytes(offset: number, length: number) : Promise<[boolean,Array<number>]> {
         
         return new Promise<[boolean,Array<number>]>(async (resolve,reject) => {
-
-            let actualReader = this._reader;
     
-            let canRead : boolean = await this.init();
-            if (!canRead)
-                reject([false,null]);
+            try {
+
+                let canRead : boolean = await this.init();
+                if (!canRead)
+                    reject([false,null]);
+            }
+            catch (initError){
+
+                reject(initError);
+            }
+
 
             try {
 
@@ -160,9 +166,40 @@ export class Sle extends MemoryCard {
             }
         });
     }
+    async writeBytes(offset: number, length: number) : Promise<boolean> {
+        
+        return new Promise<boolean>(async (resolve,reject) => {
+    
+            try {
 
-    writeBytes(offset: number, length: number, buffer: number) : boolean {
-        return true;
+                let canRead : boolean = await this.init();
+                if (!canRead)
+                    reject([false,null]);
+            }
+            catch (initError){
+                reject(initError);
+            }
+
+            try {
+
+                let apduResult : ApduResponse = await this._reader.sendApdu(
+                    this,
+                    {
+                        Cla: 0xFF,
+                        Ins: 0xD0,
+                        P1: Utilities.highestByteFromShort(offset),
+                        P2: Utilities.lowestByteFromShort(offset),
+                        Le: 2 /* SW */ + length,
+                        Lc: length /* length byte */
+                    },
+                    null
+                );
+
+                resolve(apduResult.SW[0] == 0x90 && apduResult.SW[1] == 0x00 ? true : false);
+            } catch (error) {
+                reject(error);
+            }
+        });
     }
  
     verifyPSC(psc: Array<number>) : boolean {
