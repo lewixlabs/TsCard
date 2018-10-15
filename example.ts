@@ -59,10 +59,21 @@ class Example {
 
                     if (cardInfo[1] instanceof Sle){
 
-                        console.log("reading 100 bytes from offset #32...");
+                        const bytesToRead : number = 224;
+                        console.log(`reading ${bytesToRead} bytes from offset #32...`);
                         let mySle = cardInfo[1] as Sle;
-                        let retRead = await mySle.readBytes(0, 256);
+                        let retRead = await mySle.readBytes(32, bytesToRead);
                         console.log(`SLE Read Result: ${retRead[0]}\nBytes Read: ${Utilities.bytesToHexString(retRead[1])}`);
+
+                        console.log("verify PIN");
+                        let myPIN : Array<number> = [ 0xF7, 0xB4 ];
+                        let retVerify = await mySle.verifyPIN(myPIN);
+                        console.log(`SLE Verify Result: ${retVerify[0]}\nError Counter: ${Utilities.bytesToHexString([retVerify[1]])}`);
+
+                        console.log("writing 4 bytes from offset #32...");
+                        let myBuffer : Array<number> = [ 0xAB, 0xCD, 0xDE, 0xF0 ];
+                        let retWrite = await mySle.writeBytes(32,myBuffer);
+                        console.log(`SLE Write Result: ${retWrite}`);
                     }
                 }
             }
