@@ -2,7 +2,6 @@ import * as Pcsc from 'pcsclite';
 import Reader from './reader';
 import SmartCard from './cards/smartcard';
 import { Sle } from './cards/memorycard';
-import Utilities from './utilities';
 
 export class TsCard {
     private static _instance : TsCard;
