@@ -66,7 +66,7 @@ class Example {
                         console.log(`SLE Read Result: ${retRead[0]}\nBytes Read: ${Utilities.bytesToHexString(retRead[1])}`);
 
                         console.log("verify PIN");
-                        let myPIN : Array<number> = [ 0xF7, 0xB4 ];
+                        let myPIN : Array<number> = [ 0x12, 0x34 ];
                         let retVerify = await mySle.verifyPIN(myPIN);
                         console.log(`SLE Verify Result: ${retVerify[0]}\nError Counter: ${Utilities.bytesToHexString([retVerify[1]])}`);
 
