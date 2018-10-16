@@ -1,6 +1,5 @@
 // https://www.typescriptlang.org/docs/handbook/migrating-from-javascript.html
 import pcsc = require('pcsclite');
-//import * as Pcsc from 'pcsclite';
 import Reader from './reader';
 import SmartCard from './cards/smartcard';
 import { Sle } from './cards/memorycard';
