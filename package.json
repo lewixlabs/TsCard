@@ -1,6 +1,6 @@
 {
   "name": "tscard",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "Typescript pcsclite wrapper library to support memory cards too",
   "main": "index.js",
   "scripts": {
@@ -13,5 +13,13 @@
     "pcsclite": "^0.6.0",
     "@types/buffers": "^0.1.31",
     "events": "^3.0.0"
-  }
+  },
+  "keywords": [
+    "smartcard",
+    "pcsc",
+    "pos",
+    "emv",
+    "apdu",
+    "typescript"
+  ]
 }
