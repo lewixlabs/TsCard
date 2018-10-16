@@ -1,5 +1,5 @@
 # TsCard
-Typescript [pcsclite](https://github.com/lewixlabs/TsCard) wrapper library to support memory cards too.
+Typescript [pcsclite](https://github.com/santigimeno/node-pcsclite) wrapper library to support memory cards too.
 
 ## Memory Cards
 This library, with supported manufacturer readers, uses a proprietary protocol to handle (read/write/verifyPsc) SLE memory cards.
