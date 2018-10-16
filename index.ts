@@ -1,18 +1,20 @@
-import * as Pcsc from 'pcsclite';
+// https://www.typescriptlang.org/docs/handbook/migrating-from-javascript.html
+import pcsc = require('pcsclite');
+//import * as Pcsc from 'pcsclite';
 import Reader from './reader';
 import SmartCard from './cards/smartcard';
 import { Sle } from './cards/memorycard';
 
 export class TsCard {
     private static _instance : TsCard;
-    private _pcsc : Pcsc;
+    private _pcsc : any;
     private _reader : any;
 
     private readonly _defaultTimeout : number;
 
     constructor() {
 
-        this._pcsc = new Pcsc();
+        this._pcsc = pcsc();    
         this._defaultTimeout = 15000;
         this._reader = null;
     }

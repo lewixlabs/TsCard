@@ -11,7 +11,7 @@ class Example {
 
     static async main() {
 
-        console.log("Example started...");
+        console.log("New example started...");
         let tsPcsc = TsCard.instance;
         console.log("Waiting for reader plugged...");
 
