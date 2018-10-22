@@ -2,7 +2,7 @@
   "name": "tscard",
   "version": "0.8.2",
   "description": "Typescript pcsclite wrapper library to support memory cards too",
-  "main": "index.js",
+  "main": "example.js",
   "scripts": {
     "start": "node example.js",
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -41,20 +41,53 @@ class Example {
 
                 if (!cardInfo[1].isMemoryCard) {
 
-                    console.log("Read MasterFile DF...");
+                    console.log("Select DF Name...");
+                    let buffer : Array<number> = [0xA0, 0x00, 0x00, 0x05, 0x73, 0x54, 0x52, 0x45, 0x53, 0x59 ];
+                    //let buffer : Array<number> = [0xA0, 0x56, 0x96, 0x00, 0x00, 0x00, 0x01];
                     let apduResult : ApduResponse = await cardReader.sendApdu(
                         cardInfo[1],
                         {
                             Cla: 0x00,
                             Ins: 0xA4,
+                            P1: 0x04,
+                            P2: 0x00,
+                            Le: 0x28,
+                            Lc: buffer.length
+                        },
+                        buffer
+                    );
+                    console.log(`SW: ${Utilities.bytesToHexString(apduResult.SW)}\nData Received: ${Utilities.bytesToHexString(apduResult.Data)}\n`);
+
+
+                    console.log("Read DF Info...")
+                    apduResult = await cardReader.sendApdu(
+                        cardInfo[1],
+                        {
+                            Cla: 0x00,
+                            Ins: 0xC0,
                             P1: 0x00,
                             P2: 0x00,
-                            Le: 80,
-                            Lc: 0x02
+                            Le: 0x00,
+                            Lc: 0
                         },
-                        [ 0x3F, 0x00]
+                        null
                     );
-                    console.log(`SW: ${apduResult.SW}\nData Received: ${Utilities.bytesToHexString(apduResult.Data)}`);
+                    console.log(`SW: ${Utilities.bytesToHexString(apduResult.SW)}\nData Received: ${Utilities.bytesToHexString(apduResult.Data)}\n`);
+
+                    // console.log("Read Record?..")
+                    // apduResult = await cardReader.sendApdu(
+                    //     cardInfo[1],
+                    //     {
+                    //         Cla: 0x00,
+                    //         Ins: 0xB2,
+                    //         P1: 0x01,
+                    //         P2: 0x24,
+                    //         Le: 0x16,
+                    //         Lc: 0
+                    //     },
+                    //     null
+                    // );
+                    // console.log(`SW: ${Utilities.bytesToHexString(apduResult.SW)}\nData Received: ${Utilities.bytesToHexString(apduResult.Data)}\n`);
                 } else {
 
                     if (cardInfo[1] instanceof Sle){
