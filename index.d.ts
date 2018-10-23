@@ -12,6 +12,11 @@ declare interface ApduResponse {
   Data? : Array<number>;
 }
 
+declare enum CardEvent {
+  Inserted,
+  Extracted
+}
+
 declare class SmartCard {
 
   constructor(_atr : Array<number>, _protocol: number, _isMemoryCard : boolean);

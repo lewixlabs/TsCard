@@ -22,6 +22,11 @@ class Example {
 
                 console.log(`Reader detected:${cardReader.name}`);
 
+                // tsPcsc.onCardEvent((ev,crd,error) => {
+                //     console.log(`CardEvent: ${ev}`);
+                // });
+                // return;
+
                 let cardInfo : [boolean , SmartCard?] = await tsPcsc.insertCard(15000);
                 if (cardInfo[0]){
 
@@ -58,8 +63,26 @@ class Example {
                     );
                     console.log(`SW: ${Utilities.bytesToHexString(apduResult.SW)}\nData Received: ${Utilities.bytesToHexString(apduResult.Data)}\n`);
 
+                    // console.log("Select 0001...");
+                    // buffer = [0x00, 0x01];
+                    // //let buffer : Array<number> = [0xA0, 0x56, 0x96, 0x00, 0x00, 0x00, 0x01];
+                    // apduResult = await cardReader.sendApdu(
+                    //     cardInfo[1],
+                    //     {
+                    //         Cla: 0x00,
+                    //         Ins: 0xA4,
+                    //         P1: 0x00,
+                    //         P2: 0x00,
+                    //         Le: 0x28,
+                    //         Lc: buffer.length
+                    //     },
+                    //     buffer
+                    // );
+                    // console.log(`SW: ${Utilities.bytesToHexString(apduResult.SW)}\nData Received: ${Utilities.bytesToHexString(apduResult.Data)}\n`);
+
 
                     console.log("Read DF Info...")
+                    //buffer  = [0x6F ,0x26 ,0x84 ,0x0A ,0xA0 ,0x00 ,0x00 ,0x05 ,0x73 ,0x54 ,0x52 ,0x45 ,0x53 ,0x59 ,0xA5 ,0x18 ,0xA6 ,0x05 ,0x56 ,0x41 ,0x41 ,0x35 ,0x30 ,0xA7 ,0x05 ,0x54 ,0x52 ,0x45 ,0x53 ,0x54 ,0xA8 ,0x01 ,0x01 ,0xA9 ,0x01 ,0x54 ,0xAA ,0x02 ,0x03 ,0x01];
                     apduResult = await cardReader.sendApdu(
                         cardInfo[1],
                         {
@@ -67,27 +90,27 @@ class Example {
                             Ins: 0xC0,
                             P1: 0x00,
                             P2: 0x00,
-                            Le: 0x00,
-                            Lc: 0
+                            Le: 0x28,
+                            Lc: 0x28
                         },
                         null
                     );
                     console.log(`SW: ${Utilities.bytesToHexString(apduResult.SW)}\nData Received: ${Utilities.bytesToHexString(apduResult.Data)}\n`);
 
-                    // console.log("Read Record?..")
-                    // apduResult = await cardReader.sendApdu(
-                    //     cardInfo[1],
-                    //     {
-                    //         Cla: 0x00,
-                    //         Ins: 0xB2,
-                    //         P1: 0x01,
-                    //         P2: 0x24,
-                    //         Le: 0x16,
-                    //         Lc: 0
-                    //     },
-                    //     null
-                    // );
-                    // console.log(`SW: ${Utilities.bytesToHexString(apduResult.SW)}\nData Received: ${Utilities.bytesToHexString(apduResult.Data)}\n`);
+                    console.log("Read Record?..")
+                    apduResult = await cardReader.sendApdu(
+                        cardInfo[1],
+                        {
+                            Cla: 0x00,
+                            Ins: 0xB2,
+                            P1: 0x01,
+                            P2: 0x24,
+                            Le: 0x16,
+                            Lc: 0
+                        },
+                        null
+                    );
+                    console.log(`SW: ${Utilities.bytesToHexString(apduResult.SW)}\nData Received: ${Utilities.bytesToHexString(apduResult.Data)}\n`);
                 } else {
 
                     if (cardInfo[1] instanceof Sle){
@@ -115,6 +138,9 @@ class Example {
             console.log(`Error!\n${error}`)
         }
         finally {
+
+            // setTimeout(() => console.log("Time elapsed!!"),15000);
+            // return;
 
             tsPcsc.close();
             console.log("Example completed...");    

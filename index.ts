@@ -3,6 +3,7 @@ import pcsc = require('pcsclite');
 import Reader from './reader';
 import SmartCard from './cards/smartcard';
 import { Sle } from './cards/memorycard';
+import { CardEvent } from './cards/smartcard';
 
 export class TsCard {
     private static _instance : TsCard;
@@ -26,6 +27,7 @@ export class TsCard {
         return this._instance;
     }
 
+    //#region Methods
     async detectReader(timeout? : number) : Promise<Reader> {
 
         if (timeout == null)
@@ -138,6 +140,42 @@ export class TsCard {
         if (this._pcsc)
             this._pcsc.close();
     }
+
+    //#endregion
+    //#region Events
+    onCardEvent(f : (event: CardEvent, card: SmartCard, e : Error) => void) {
+
+        let actualReader = this._reader;
+
+        actualReader.on('status', function(status) {
+        
+            var changes = this.state ^ status.state;
+            if (changes) {
+                if ((changes & this.SCARD_STATE_PRESENT) && (status.state & this.SCARD_STATE_PRESENT)) {
+                    /* card inserted */
+                    actualReader.connect({ share_mode : this.SCARD_SHARE_SHARED }, function(err, protocol) {
+                        if (err) {
+
+                            f(null, null, new Error(err));
+                        } else {
+
+                            if (Sle.isSupportedMemoryCard(actualReader,[...status.atr]))
+                                f(CardEvent.Inserted, new Sle(new Reader(actualReader), [...status.atr], protocol), null);
+                            else
+                                f(CardEvent.Inserted, new SmartCard([...status.atr], protocol), null);
+                        }
+                    });
+                }
+            }
+        });
+
+        this._pcsc.on('error', function(err) {
+
+            f(null, null, new Error(err));
+        });
+    }
+
+    //#endregion
 
     // static rawDemo() : void {
 
