@@ -43,5 +43,6 @@ declare class TsCard {
   detectReader(timeout? : number) : Promise<Reader>;
   insertCard(timeout? : number) : Promise<[boolean,SmartCard?]>;
   removeCard(timeout? : number) : Promise<boolean>;
+  onCardEvent(f : (event: CardEvent, card: SmartCard, e : Error) => void);
   close();
 }
