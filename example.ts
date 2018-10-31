@@ -5,8 +5,35 @@ import { Sle } from './cards/memorycard';
 import Utilities from './utilities';
 
 class Example {
-    static rawTest(){
-        //TsCard.rawDemo();
+    static async eventTest(){
+
+        console.log("Event example started...");
+        let tsPcsc = TsCard.instance;
+        console.log("Waiting for reader plugged...");
+
+        try {
+
+            let cardReader : Reader = await tsPcsc.detectReader(15000);
+            if (cardReader != null) {
+
+                console.log(`Reader detected:${cardReader.name}`);
+
+                tsPcsc.onCardEvent((ev,crd,error) => {
+                    console.log(`CardEvent: ${ev}`);
+                });
+            }
+        }
+        catch (error) {
+            console.log(`Error!\n${error}`)
+        }
+        finally {
+
+            setTimeout(() => {
+
+                tsPcsc.close();
+                console.log("Event Example completed...");    
+            },15000);
+        }
     }
 
     static async main() {
@@ -21,11 +48,6 @@ class Example {
             if (cardReader != null) {
 
                 console.log(`Reader detected:${cardReader.name}`);
-
-                // tsPcsc.onCardEvent((ev,crd,error) => {
-                //     console.log(`CardEvent: ${ev}`);
-                // });
-                // return;
 
                 let cardInfo : [boolean , SmartCard?] = await tsPcsc.insertCard(15000);
                 if (cardInfo[0]){
@@ -62,24 +84,6 @@ class Example {
                         buffer
                     );
                     console.log(`SW: ${Utilities.bytesToHexString(apduResult.SW)}\nData Received: ${Utilities.bytesToHexString(apduResult.Data)}\n`);
-
-                    // console.log("Select 0001...");
-                    // buffer = [0x00, 0x01];
-                    // //let buffer : Array<number> = [0xA0, 0x56, 0x96, 0x00, 0x00, 0x00, 0x01];
-                    // apduResult = await cardReader.sendApdu(
-                    //     cardInfo[1],
-                    //     {
-                    //         Cla: 0x00,
-                    //         Ins: 0xA4,
-                    //         P1: 0x00,
-                    //         P2: 0x00,
-                    //         Le: 0x28,
-                    //         Lc: buffer.length
-                    //     },
-                    //     buffer
-                    // );
-                    // console.log(`SW: ${Utilities.bytesToHexString(apduResult.SW)}\nData Received: ${Utilities.bytesToHexString(apduResult.Data)}\n`);
-
 
                     console.log("Read DF Info...")
                     //buffer  = [0x6F ,0x26 ,0x84 ,0x0A ,0xA0 ,0x00 ,0x00 ,0x05 ,0x73 ,0x54 ,0x52 ,0x45 ,0x53 ,0x59 ,0xA5 ,0x18 ,0xA6 ,0x05 ,0x56 ,0x41 ,0x41 ,0x35 ,0x30 ,0xA7 ,0x05 ,0x54 ,0x52 ,0x45 ,0x53 ,0x54 ,0xA8 ,0x01 ,0x01 ,0xA9 ,0x01 ,0x54 ,0xAA ,0x02 ,0x03 ,0x01];
@@ -150,5 +154,5 @@ class Example {
     }
 }
 
-//Example.rawTest();
-Example.main();
+Example.eventTest();
+//Example.main();

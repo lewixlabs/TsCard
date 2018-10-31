@@ -151,6 +151,16 @@ export class TsCard {
         
             var changes = this.state ^ status.state;
             if (changes) {
+                if ((changes & this.SCARD_STATE_EMPTY) && (status.state & this.SCARD_STATE_EMPTY)) {
+                    /* card removed */
+                    actualReader.disconnect(actualReader.SCARD_LEAVE_CARD, function(err) {
+                        if (err) {
+                            f(null, null, new Error(err));
+                        } else {
+                            f(CardEvent.Removed, null, null);
+                        }
+                    });
+                } else 
                 if ((changes & this.SCARD_STATE_PRESENT) && (status.state & this.SCARD_STATE_PRESENT)) {
                     /* card inserted */
                     actualReader.connect({ share_mode : this.SCARD_SHARE_SHARED }, function(err, protocol) {

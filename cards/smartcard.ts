@@ -1,6 +1,6 @@
 export enum CardEvent {
     Inserted,
-    Extracted
+    Removed
 }
 
 export default class SmartCard {

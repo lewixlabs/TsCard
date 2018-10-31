@@ -14,7 +14,7 @@ declare interface ApduResponse {
 
 declare enum CardEvent {
   Inserted,
-  Extracted
+  Removed
 }
 
 declare class SmartCard {
