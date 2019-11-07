@@ -10,4 +10,4 @@ Specifications here:
 http://downloads.acs.com.hk/drivers/en/PMA_ACR38x(CCID)_v6.01.pdf
 
 ## Typescript Example
-<script src="https://gist.github.com/lewixlabs/6fb7cc524902378338ccd56f9048537a.js"></script>
+https://gist.github.com/lewixlabs/6fb7cc524902378338ccd56f9048537a
