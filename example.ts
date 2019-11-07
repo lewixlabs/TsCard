@@ -154,5 +154,5 @@ class Example {
     }
 }
 
-Example.eventTest();
-//Example.main();
+//Example.eventTest();
+Example.main();
