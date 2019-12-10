@@ -4,7 +4,7 @@ import Utilities from '../utilities';
 import Reader from '../reader';
 
 //#region SLE Parameters
-enum MemoryCardTypes {
+export enum MemoryCardTypes {
     SLE5528 = 0x05,
     SLE5542 = 0x06
 }
