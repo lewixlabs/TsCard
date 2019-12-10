@@ -17,6 +17,11 @@ declare enum CardEvent {
   Removed
 }
 
+declare enum MemoryCardTypes {
+  SLE5528 = 0x05,
+  SLE5542 = 0x06
+}
+
 declare class SmartCard {
 
   constructor(_atr : Array<number>, _protocol: number, _isMemoryCard : boolean);
