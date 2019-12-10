@@ -22,6 +22,13 @@ declare enum MemoryCardTypes {
   SLE5542 = 0x06
 }
 
+declare enum PINStatus {
+  NOT_VERIFIED,
+  OK,
+  WRONG,
+  LOCKED
+}
+
 declare class SmartCard {
 
   constructor(_atr : Array<number>, _protocol: number, _isMemoryCard : boolean);

@@ -14,7 +14,7 @@ interface SleSupported {
     size : number // size in bytes
 }
 
-enum PINStatus {
+export enum PINStatus {
     NOT_VERIFIED,
     OK,
     WRONG,
