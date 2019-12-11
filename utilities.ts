@@ -15,6 +15,19 @@ export default class Utilities {
         return atrHex;
     }
 
+    static hexStringToBytes(str: string): number[] {
+        if (!str) {
+            return [];
+        }
+
+        const numberArray: number[] = [];
+        for (let i: number = 0, len = str.length; i < len; i += 2) {
+            numberArray.push(parseInt(str.substr(i, 2), 16));
+        }
+
+        return numberArray;
+    }
+
     static lowestByteFromShort = (short : number) => short & 0x00FF;
     static highestByteFromShort = (short : number) => (short & 0xFF00) >> 8;
 }
