@@ -1,6 +1,8 @@
 # TsCard
 Typescript [pcsclite](https://github.com/santigimeno/node-pcsclite) wrapper library to support chip (asynchronous/emv) and memory smartcards.
 
+This library is used by [Charta](https://github.com/lewixlabs/charta), cross platform app to handle smartcards
+
 ## Memory Cards
 This library, with supported manufacturer readers, uses a proprietary protocol to handle (read/write/verifyPsc) SLE memory cards.
 
