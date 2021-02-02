@@ -51,6 +51,7 @@ interface IMemoryCard {
      readBytes(offset: number, length: number) : Promise<[boolean,Array<number>]>;
      writeBytes(offset: number, buffer: Array<number>) : Promise<boolean>;
      verifyPIN(pin: Array<number>) : Promise<[PINStatus, number /* error counter */]>;
+     changePIN(newPin: Array<number>) : Promise<boolean>;
 }
 
 abstract class MemoryCard extends SmartCard implements IMemoryCard {
@@ -58,6 +59,7 @@ abstract class MemoryCard extends SmartCard implements IMemoryCard {
     abstract readBytes(offset: number, length: number) : Promise<[boolean,Array<number>]>;
     abstract writeBytes(offset: number, buffer: Array<number>) : Promise<boolean>;
     abstract verifyPIN(pin: Array<number>) : Promise<[PINStatus, number /* error counter */]>;
+    abstract changePIN(newPin: Array<number>) : Promise<boolean>;
 }
 
 export class Sle extends MemoryCard {
@@ -274,6 +276,49 @@ export class Sle extends MemoryCard {
                 let errorCounter : number = apduResult.SW[1];
 
                 resolve([verifyResult, errorCounter]);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
+    // for SLEXX42 only
+    async changePIN(newPin: Array<number>) : Promise<boolean> {
+
+        return new Promise<boolean>(async (resolve,reject) => {
+    
+            try {
+
+                let canRead : boolean = await this.init();
+                if (!canRead)
+                    reject([false,null]);
+            }
+            catch (initError){
+                reject(initError);
+            }
+
+            try {
+
+                let apduResult : ApduResponse = await this._reader.sendApdu(
+                    this,
+                    {
+                        Cla: 0xFF,
+                        Ins: 0xD2,
+                        P1: 0x00,
+                        P2: 0x01,
+                        Le: 0,
+                        Lc: 3 /* length byte */
+                    },
+                    newPin
+                );
+
+                /*
+                 * This command is used to write the specified data as new secret code in the card.
+                 * The current secret code must have been presented to the card with the PRESENT_CODE command prior to the execution of this command.
+                 * Command format (abData field in the PC_to_RDR_XfrBlock) 
+                */
+
+                resolve(apduResult.SW[0] == 0x90 ? true : false);
             } catch (error) {
                 reject(error);
             }
