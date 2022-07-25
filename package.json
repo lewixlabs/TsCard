@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/buffers": "^0.1.31",
-    "events": "^3.0.0",
+    "events": "^3.3.0",
     "pcsclite": "^1.0.0"
   },
   "keywords": [
