@@ -88,7 +88,7 @@ export class Sle extends MemoryCard {
 
         // reader check
         if (reader && reader.name && typeof(reader.name) === "string")
-            readerSupported = reader.name.toUpperCase().includes("ACR 38") || reader.name.toUpperCase().includes("ACR38") || reader.name.toUpperCase().includes("ACS") || reader.name.toUpperCase().includes("ALCOR");
+            readerSupported = reader.name.toUpperCase().includes("ACR 38") || reader.name.toUpperCase().includes("ACR38") || reader.name.toUpperCase().includes("ACS") || reader.name.toUpperCase().includes("ALCOR") || reader.name.toUpperCase().includes("BIT4ID");;
 
         // atr check
         if (atr){
