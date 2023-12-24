@@ -15,6 +15,7 @@ http://downloads.acs.com.hk/drivers/en/PMA_ACR38x(CCID)_v6.01.pdf
 https://gist.github.com/lewixlabs/6fb7cc524902378338ccd56f9048537a
 
 ## Build from source code
+![Build status](https://github.com/lewixlabs/TsCard/workflows/main.yml/badge.svg)
 
 ### Prerequisites (*linux only*)
 
