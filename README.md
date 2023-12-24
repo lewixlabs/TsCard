@@ -13,3 +13,16 @@ http://downloads.acs.com.hk/drivers/en/PMA_ACR38x(CCID)_v6.01.pdf
 
 ## Typescript Example
 https://gist.github.com/lewixlabs/6fb7cc524902378338ccd56f9048537a
+
+## Build from source code
+
+### Prerequisites (*linux only*)
+
+    apt install libpcsclite1 libpcsclite-dev
+
+### Build
+    git clone https://github.com/lewixlabs/TsCard.git
+
+    cd TsCard
+
+    yarn
