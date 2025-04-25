@@ -1,4 +1,4 @@
-declare interface Apdu {
+export interface Apdu {
   Cla : number;
   Ins : number;
   P1 : number;
@@ -7,29 +7,29 @@ declare interface Apdu {
   Lc : number;
 }
 
-declare interface ApduResponse {
+export interface ApduResponse {
   SW : Array<number>;
   Data? : Array<number>;
 }
 
-declare enum CardEvent {
+export enum CardEvent {
   Inserted,
   Removed
 }
 
-declare enum MemoryCardTypes {
+export enum MemoryCardTypes {
   SLE5528 = 0x05,
   SLE5542 = 0x06
 }
 
-declare enum PINStatus {
+export enum PINStatus {
   NOT_VERIFIED,
   OK,
   WRONG,
   LOCKED
 }
 
-declare class SmartCard {
+export class SmartCard {
 
   constructor(_atr : Array<number>, _protocol: number, _isMemoryCard : boolean);
 
@@ -38,7 +38,7 @@ declare class SmartCard {
   isMemoryCard : boolean;
 }
 
-declare class Reader {
+export class Reader {
 
   constructor(_pcscReader : any);
 
@@ -48,7 +48,7 @@ declare class Reader {
   close();
 }
 
-declare class TsCard {
+export class TsCard {
 
   static instance : TsCard
 

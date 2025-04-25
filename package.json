@@ -4,6 +4,8 @@
   "description": "Typescript pcsclite wrapper library to support memory cards too",
   "scripts": {
     "start": "node example.js",
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "lewix",
@@ -21,6 +23,12 @@
   ],
   "devDependencies": {
     "@types/buffers": "^0.1.34",
-    "typescript": "^5.8.3"
-  }
+    "typescript": "^5.8.3",
+    "node-gyp": "^11.2.0"
+  },
+  "types": "index.d.ts",
+  "files": [
+    "dist",
+    "index.d.ts"
+  ]
 }

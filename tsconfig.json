@@ -1,8 +1,9 @@
 {
     "compilerOptions": {
         "target": "ES2023",
-        "module": "commonjs",    
+        "module": "commonjs",
         "sourceMap": true,
-        "lib": ["ES2023", "dom"],
-    }
+        "lib": ["ES2023", "dom"]
+    },
+    "include": ["*.ts", "cards/*.ts"]
 }
