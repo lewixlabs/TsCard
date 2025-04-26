@@ -21,9 +21,11 @@ https://gist.github.com/lewixlabs/6fb7cc524902378338ccd56f9048537a
 
     apt install libpcsclite1 libpcsclite-dev
 
-### Build
+### Install dependencies and build
     git clone https://github.com/lewixlabs/TsCard.git
 
     cd TsCard
 
     yarn
+
+    yarn build
